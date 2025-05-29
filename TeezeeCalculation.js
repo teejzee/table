@@ -208,6 +208,16 @@ export class TeezeeCalculation extends LitElement {
             border-color: white;
             box-shadow: 0 0 10px lightpink;
         }
+        
+        .score {
+            background-color: deeppink;
+            border-color: white;
+            box-shadow: 0 0 10px lightpink;
+            color: white;
+            font-size: 24px;
+            display: flex;
+            justify-content: flex-end;
+        }
 
     `;
 
@@ -229,6 +239,9 @@ export class TeezeeCalculation extends LitElement {
         },
         _tableChoiceSelected: {
             type: Array
+        },
+        _score: {
+            type: Number,
         }
     }
 
@@ -238,6 +251,7 @@ export class TeezeeCalculation extends LitElement {
         this._succes = false;
         this._tableChoice = [1, 2, 3, 4, 5, 6, 7, 8, 9];
         this._tableChoiceSelected = [];
+        this._score = 0;
     }
 
     updated() {
@@ -264,6 +278,7 @@ export class TeezeeCalculation extends LitElement {
     }
 
     _renderSucces() {
+        this._score = this._score + 1;
         return html`
             <div class="notification success">
                 <div class="message">Goed gedaan!!</div>
@@ -284,6 +299,7 @@ export class TeezeeCalculation extends LitElement {
                 <span class="number">${this.randomNumberRight}</span>
                 <span> = </span>
                 <input @keydown="${(e) => this.calculate(e)}" class="noscroll calculation-input" type="number">
+                <div class="score">PUNTEN  ${this._score}</div>
             </div>
         `
     }
