@@ -229,7 +229,7 @@ export class TeezeeCalculation extends LitElement {
         }
 
         .fly {
-            animation: flyAnimation 8s linear forwards;
+            animation: flyAnimation 16s linear forwards;
             opacity: 1;
         }
 
@@ -238,13 +238,13 @@ export class TeezeeCalculation extends LitElement {
                 transform: translateX(0) rotate(0deg);
             }
             25% {
-                transform: translateX(300px) translateY(-25px) rotate(45deg);
+                transform: translateX(600px) translateY(-25px) rotate(45deg);
             }
             50% {
-                transform: translateX(550px) translateY(0px) rotate(90deg);
+                transform: translateX(300px) translateY(0px) rotate(90deg);
             }
             75% {
-                transform: translateX(800px) translateY(-50px) rotate(135deg);
+                transform: translateX(1300px) translateY(-50px) rotate(135deg);
             }
             100% {
                 transform: translateX(1100px) translateY(0px) rotate(180deg);
