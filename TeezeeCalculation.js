@@ -249,7 +249,7 @@ export class TeezeeCalculation extends LitElement {
         super();
         this._displayCalculation = true;
         this._succes = false;
-        this._tableChoice = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        this._tableChoice = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10,34];
         this._tableChoiceSelected = [];
         this._score = 0;
     }
@@ -272,7 +272,7 @@ export class TeezeeCalculation extends LitElement {
     _renderError() {
         return html`
             <div class="notification error">
-                <div class="message">Helaas, niet goed</div>
+                <div class="message">Helaas, niet goed het antwoord was: ${this._correctAnswer}</div>
             </div>
         `
     }
@@ -307,11 +307,11 @@ export class TeezeeCalculation extends LitElement {
     calculate(event) {
         if (event.key !== 'Enter') return;
 
-        const correct = parseInt(this.randomNumberLeft * this.randomNumberRight);
+        this._correctAnswer = parseInt(this.randomNumberLeft * this.randomNumberRight);
         const userInput = parseInt(document.querySelector('teezee-calculation').shadowRoot.querySelector('.calculation-input').value);
 
         if (userInput) {
-            this._succes = correct === userInput;
+            this._succes = this._correctAnswer === userInput;
             this._displayCalculation = false;
         }
 
