@@ -1,6 +1,6 @@
 import {html, LitElement, css} from 'lit';
 
-export class IngFeatExample extends LitElement {
+export class TeezeeCalculation extends LitElement {
 
     static styles = css`
 
@@ -13,11 +13,7 @@ export class IngFeatExample extends LitElement {
             height: 100vh;
             background-color: darkmagenta;
             box-sizing: border-box;
-            
         }
-
-
-
 
         .header {
             font-size: 75px;
