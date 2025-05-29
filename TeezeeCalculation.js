@@ -1,4 +1,4 @@
-import { html, css, LitElement } from 'https://unpkg.com/lit@2.8.0/index.js?module';
+import {html, css, LitElement} from 'https://unpkg.com/lit@2.8.0/index.js?module';
 
 export class TeezeeCalculation extends LitElement {
 
@@ -13,7 +13,6 @@ export class TeezeeCalculation extends LitElement {
             height: 100vh;
             background-color: darkmagenta;
             box-sizing: border-box;
-            
         }
 
         .header {
@@ -33,17 +32,15 @@ export class TeezeeCalculation extends LitElement {
                 text-shadow: 0 0 10px lightpink, 0 0 20px lightpink, 0 0 30px lightpink;
             }
             100% {
-                text-shadow:
-                        0 0 20px red,
-                        0 0 30px orange,
-                        0 0 40px yellow,
-                        0 0 50px green,
-                        0 0 60px blue,
-                        0 0 70px indigo,
-                        0 0 80px violet;
+                text-shadow: 0 0 20px red,
+                0 0 30px orange,
+                0 0 40px yellow,
+                0 0 50px green,
+                0 0 60px blue,
+                0 0 70px indigo,
+                0 0 80px violet;
             }
         }
-
 
 
         .calculation-container {
@@ -65,7 +62,7 @@ export class TeezeeCalculation extends LitElement {
             }
         }
 
-        
+
         .notification.success {
             background-color: green;
             border-radius: 3px;
@@ -118,7 +115,7 @@ export class TeezeeCalculation extends LitElement {
                 box-shadow: 0 0 20px darkred, 0 0 30px darkred, 0 0 40px darkred;
             }
         }
-        
+
         @keyframes bounce {
             0%, 100% {
                 transform: translateY(0);
@@ -127,7 +124,7 @@ export class TeezeeCalculation extends LitElement {
                 transform: translateY(-10px);
             }
         }
-        
+
         @keyframes shake {
             0%, 100% {
                 transform: translateX(0);
@@ -139,8 +136,6 @@ export class TeezeeCalculation extends LitElement {
                 transform: translateX(5px);
             }
         }
-
-
 
         .error {
             background-color: red;
@@ -178,6 +173,41 @@ export class TeezeeCalculation extends LitElement {
             border-color: white;
         }
 
+        .table-choice-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .table-number {
+            display: flex;
+            color: white;
+            justify-content: center;
+            border: 1px solid lightpink;
+            width: 50px;
+            height: 30px;
+            padding: 16px;
+            margin: 16px;
+
+        }
+
+        .table-number.selected {
+            background-color: deeppink;
+            border-color: white;
+            box-shadow: 0 0 10px lightpink;
+
+        }
+
+        .table-number:hover {
+            background-color: deeppink;
+            border-color: white;
+            box-shadow: 0 0 10px lightpink;
+        }
+
+        .table-number:selected {
+            background-color: deeppink;
+            border-color: white;
+            box-shadow: 0 0 10px lightpink;
+        }
 
     `;
 
@@ -193,6 +223,12 @@ export class TeezeeCalculation extends LitElement {
         },
         _displayCalculation: {
             type: Boolean,
+        },
+        _tableChoice: {
+            type: Array,
+        },
+        _tableChoiceSelected: {
+            type: Array
         }
     }
 
@@ -200,6 +236,8 @@ export class TeezeeCalculation extends LitElement {
         super();
         this._displayCalculation = true;
         this._succes = false;
+        this._tableChoice = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        this._tableChoiceSelected = [];
     }
 
     updated() {
@@ -212,9 +250,9 @@ export class TeezeeCalculation extends LitElement {
     }
 
     createMath() {
+        const randomNumber = this._tableChoiceSelected[Math.floor(Math.random() * this._tableChoiceSelected.length)];
         this.randomNumberLeft = this.createRandomNumber();
-        this.randomNumberRight = this.createRandomNumber();
-
+        this.randomNumberRight = randomNumber ? randomNumber : this.createRandomNumber();
     }
 
     _renderError() {
@@ -230,7 +268,6 @@ export class TeezeeCalculation extends LitElement {
             <div class="notification success">
                 <div class="message">Goed gedaan!!</div>
             </div>
-
         `
     }
 
@@ -239,7 +276,6 @@ export class TeezeeCalculation extends LitElement {
         if (!this._displayCalculation) {
             return this._succes ? this._renderSucces() : this._renderError();
         }
-
 
         return html`
             <div class="calculation-container">
@@ -270,9 +306,42 @@ export class TeezeeCalculation extends LitElement {
         }, 1000)
     }
 
+    _setTableChoice(event, tableChoice) {
+        this._tableChoiceSelected = this._tableChoiceSelected.includes(tableChoice)
+            ? this._tableChoiceSelected.filter(item => item !== tableChoice)
+            : [...this._tableChoiceSelected, tableChoice];
+
+        console.log(this._tableChoiceSelected)
+
+    }
+
+    setSelectedClass(number) {
+        if (this._tableChoiceSelected.includes(number)) {
+            return 'selected';
+        }
+
+    }
+
+    _selectTables() {
+        return html`
+            <div class="table-choice-container">
+                ${this._tableChoice.map((table) => {
+                    return html`
+                        <div class="table-number ${this.setSelectedClass(table)}"
+                             @click="${(e) => this._setTableChoice(e, table)}">${table}
+                        </div>
+                    `
+                })}
+            </div>
+        `
+
+
+    }
+
     render() {
         this.createMath();
         return html`
+            ${this._selectTables()}
             <div class="calculation-game">
                 <div class="header">Tafeldiploma Kiki</div>
                 ${this._renderCalculation()}
