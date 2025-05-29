@@ -1,4 +1,4 @@
-import {html, LitElement, css} from 'lit';
+import { html, css, LitElement } from 'https://unpkg.com/lit@2.8.0/index.js?module';
 
 export class TeezeeCalculation extends LitElement {
 
