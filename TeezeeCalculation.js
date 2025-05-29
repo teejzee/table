@@ -218,6 +218,39 @@ export class TeezeeCalculation extends LitElement {
             display: flex;
             justify-content: flex-end;
         }
+        
+        .img {
+            position: absolute;
+            top: 100px;
+            left: -200px;
+            width: 100px;
+            opacity: 0;
+            transition: opacity 1s ease-in;
+        }
+
+        .fly {
+            animation: flyAnimation 8s linear forwards;
+            opacity: 1;
+        }
+
+        @keyframes flyAnimation {
+            0% {
+                transform: translateX(0) rotate(0deg);
+            }
+            25% {
+                transform: translateX(250px) translateY(-25px) rotate(45deg);
+            }
+            50% {
+                transform: translateX(500px) translateY(0px) rotate(90deg);
+            }
+            75% {
+                transform: translateX(750px) translateY(-50px) rotate(135deg);
+            }
+            100% {
+                transform: translateX(1000px) translateY(0px) rotate(180deg);
+            }
+        }
+
 
     `;
 
@@ -279,6 +312,18 @@ export class TeezeeCalculation extends LitElement {
 
     _renderSucces() {
         this._score = this._score + 1;
+        const flyImage = document.createElement('img');
+        const randomFly = Math.floor(Math.random() * (4) + 1);
+        flyImage.setAttribute('src', `./assets/butterfly${randomFly}.png`);
+        flyImage.classList.add('img');
+
+        const randomStartY = Math.floor(Math.random() * (600) + 1);
+        const randomStartX = Math.floor(Math.random() * (3) + 1);
+        flyImage.style.top = `${randomStartY}px`;
+        flyImage.style.left = `${randomStartX}px`;
+        this.shadowRoot.querySelector('.calculation-game').appendChild(flyImage);
+        flyImage.classList.add('fly');
+
         return html`
             <div class="notification success">
                 <div class="message">Goed gedaan!!</div>
