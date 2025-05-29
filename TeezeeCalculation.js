@@ -13,6 +13,7 @@ export class TeezeeCalculation extends LitElement {
             height: 100vh;
             background-color: darkmagenta;
             box-sizing: border-box;
+            
         }
 
         .header {
@@ -255,7 +256,7 @@ export class TeezeeCalculation extends LitElement {
         if (event.key !== 'Enter') return;
 
         const correct = parseInt(this.randomNumberLeft * this.randomNumberRight);
-        const userInput = parseInt(document.querySelector('ing-feat-example').shadowRoot.querySelector('.calculation-input').value);
+        const userInput = parseInt(document.querySelector('teezee-calculation').shadowRoot.querySelector('.calculation-input').value);
 
         if (userInput) {
             this._succes = correct === userInput;
