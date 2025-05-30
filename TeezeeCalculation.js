@@ -558,7 +558,7 @@ export class TeezeeCalculation extends LitElement {
     }
 
     _renderDiploma() {
-        return this._wrongAnswer === 0 && this._succes > 19 ? html`
+        return this._wrongAnswer === 0 && this._score > 19 ? html`
             <div>Je hebt je diploma gehaald!</div>` : html`
             <div>Je hebt helaas geen diploma :(</div>`
     }
@@ -582,7 +582,7 @@ export class TeezeeCalculation extends LitElement {
 
 
                 let mergedGames = [];
-
+debugger
                 const graduate = this._wrongAnswer === 0 && this._succes > 19;
                 const calculationGame = [{
                     name: this._gameName,
