@@ -416,7 +416,6 @@ export class TeezeeCalculation extends LitElement {
         _wrongAnswer: {
             type: Number,
         }
-
     }
 
     constructor() {
@@ -453,7 +452,7 @@ export class TeezeeCalculation extends LitElement {
     _renderError() {
         return html`
             <div class="notification error">
-                <div class="message">Helaas, niet goed het antwoord was: ${this._correctAnswer}</div>
+                <div class="message">Helaas, het was: ${this._correctAnswer}</div>
             </div>
         `
     }
@@ -472,9 +471,11 @@ export class TeezeeCalculation extends LitElement {
         this.shadowRoot.querySelector('.calculation-game').appendChild(flyImage);
         flyImage.classList.add('fly');
 
+        const messages = ["Goed gedaan!", "Lekker bezig!", "BAM!!", "Goed hoor!", "Zeker wel!!", "Knal!!", "Lekker!!"]
+        const messageNumber =  Math.floor(Math.random() * (messages.length) );
         return html`
             <div class="notification success">
-                <div class="message">Goed gedaan!!</div>
+                <div class="message">${messages[messageNumber]}</div>
             </div>
         `
     }
@@ -499,10 +500,11 @@ export class TeezeeCalculation extends LitElement {
                 </thead>
                 <tbody>
                 ${sortedSavedGames.map((game) => {
+                    const sortedTables = game.tables.sort((a, b) => a - b);
                     return html`
                         <tr>
                             <td>${game.name}</td>
-                            <td>${game.tables.length < 1 ? 'alle' : game.tables}</td>
+                            <td>${game.tables.length < 1 ? 'alle' : sortedTables.join(', ')}</td>
                             <td>${game.score}</td>
                             <td>${game.errors}</td>
                             <td>${game.graduate ? 'Ja' : 'Nee'}</td>
@@ -644,9 +646,6 @@ export class TeezeeCalculation extends LitElement {
         this._tableChoiceSelected = this._tableChoiceSelected.includes(tableChoice)
             ? this._tableChoiceSelected.filter(item => item !== tableChoice)
             : [...this._tableChoiceSelected, tableChoice];
-
-        console.log(this._tableChoiceSelected)
-
     }
 
     setSelectedClass(number) {
