@@ -582,8 +582,7 @@ export class TeezeeCalculation extends LitElement {
 
 
                 let mergedGames = [];
-debugger
-                const graduate = this._wrongAnswer === 0 && this._succes > 19;
+                const graduate = this._wrongAnswer === 0 && this._score > 19;
                 const calculationGame = [{
                     name: this._gameName,
                     tables: this._tableChoiceSelected,
