@@ -246,7 +246,7 @@ export class TeezeeCalculation extends LitElement {
             color: white;
             font-size: 24px;
             display: flex;
-            justify-content: flex-end;
+            justify-content: center;
         }
 
         .img {
