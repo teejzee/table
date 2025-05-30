@@ -30,7 +30,7 @@ export class TeezeeCalculation extends LitElement {
                 0 0 80px violet;
             }
         }
-        
+
         .calculation-game {
             display: flex;
             justify-content: center;
@@ -60,18 +60,17 @@ export class TeezeeCalculation extends LitElement {
         #timer {
             position: fixed;
             top: 15%;
-            transform: translate(-50%, -50%); 
+            transform: translate(-50%, -50%);
             font-size: 64px;
             font-family: 'Baloo Tamma 2', cursive;
             color: white;
-            background: linear-gradient(135deg, #8e2de2, #ff6ec4); 
+            background: linear-gradient(135deg, #8e2de2, #ff6ec4);
             margin: 16px;
             border-radius: 20px;
             text-align: center;
             box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
             animation: pulse 2s infinite;
         }
-
 
 
         .calculation-container {
@@ -110,7 +109,7 @@ export class TeezeeCalculation extends LitElement {
             color: whitesmoke;
             animation: bounce 1s ease infinite;
         }
-        
+
         .notification.error {
             background-color: red;
             border-radius: 3px;
@@ -282,6 +281,38 @@ export class TeezeeCalculation extends LitElement {
             }
         }
 
+        .calculation-button {
+            font-family: 'Baloo Tamma 2', cursive;
+            font-size: 24px;
+            color: white;
+            background: linear-gradient(135deg, #8e2de2, #ff6ec4); /* paars naar roze */
+            border: none;
+            border-radius: 12px;
+            padding: 15px 40px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .calculation-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(255, 105, 180, 0.6);
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 10px rgba(255, 105, 180, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
+            }
+            100% {
+                box-shadow: 0 0 10px rgba(255, 105, 180, 0.4);
+            }
+        }
+
+
 
     `;
 
@@ -312,6 +343,9 @@ export class TeezeeCalculation extends LitElement {
         },
         _gameOver: {
             type: Boolean,
+        },
+        _wrongAnswer: {
+            type: Number,
         }
 
     }
@@ -325,6 +359,7 @@ export class TeezeeCalculation extends LitElement {
         this._score = 0;
         this._gameStarted = false;
         this._gameOver = false;
+        this._wrongAnswer = 0;
     }
 
     updated() {
@@ -373,9 +408,14 @@ export class TeezeeCalculation extends LitElement {
 
     _renderCalculation() {
 
-        if(!this._gameOver) {
+        if (!this._gameOver) {
 
             if (!this._displayCalculation) {
+
+                if (!this._succes) {
+                    this._wrongAnswer = this._wrongAnswer + 1;
+                }
+
                 return this._succes ? this._renderSucces() : this._renderError();
             }
 
@@ -393,13 +433,30 @@ export class TeezeeCalculation extends LitElement {
             `
         } else {
             return html`
-            <div class="game-over">GameOver</div>
+                <div class="game-over">
+                    <div>Je hebt er ${this._score} goed!</div>
+                    <div>Je hebt ${this._wrongAnswer} foutjes gemaakt</div>
+                    ${this._renderDiploma()}
+
+                    <button @click="${this._startGame}" class="calculation-button">Start opnieuw</button>
+
+                </div>
             `
         }
     }
 
+    _startGame(){
+        window.location.reload();
+    }
+
+    _renderDiploma() {
+        this._wrongAnswer === 0 && this._succes > 19 ? html`
+            <div>Je hebt je diploma gehaald!</div>` : html`
+            <div>Je hebt helaas geen diploma :(</div>`
+    }
+
     _timer() {
-        let totalSeconds = 2 * 60;
+        let totalSeconds = 2;
 
         const timerElement = document.querySelector('teezee-calculation').shadowRoot.getElementById("timer");
 
@@ -413,6 +470,8 @@ export class TeezeeCalculation extends LitElement {
             if (totalSeconds <= 0) {
                 clearInterval(countdown);
                 this._gameOver = true;
+                const timer = document.querySelector('teezee-calculation').shadowRoot.querySelector('#timer');
+                document.querySelector('teezee-calculation').shadowRoot.querySelector('.calculation-game').removeChild(timer);
             }
 
             totalSeconds--;
@@ -424,12 +483,12 @@ export class TeezeeCalculation extends LitElement {
 
         if (event.key !== 'Enter') return;
 
-        if(!this._gameOver && !this._gameStarted) {
+        if (!this._gameOver && !this._gameStarted) {
             this._timer();
             this._gameStarted = true;
         }
 
-        if(!this._gameOver) {
+        if (!this._gameOver) {
 
 
             this._correctAnswer = parseInt(this.randomNumberLeft * this.randomNumberRight);
@@ -461,7 +520,6 @@ export class TeezeeCalculation extends LitElement {
         if (this._tableChoiceSelected.includes(number)) {
             return 'selected';
         }
-
     }
 
     _selectTables() {
