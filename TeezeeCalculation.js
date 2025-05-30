@@ -4,18 +4,7 @@ export class TeezeeCalculation extends LitElement {
 
     static styles = css`
 
-        .calculation-game {
-            display: flex;
-            justify-content: center;
-            align-items: center; /* begin bovenaan */
-            flex-direction: column;
-            width: 100vw;
-            height: 100vh;
-            background-color: darkmagenta;
-            box-sizing: border-box;
-        }
-
-        .header {
+        .game-over {
             font-size: 75px;
             color: lightpink;
             font-family: "Baloo Tamma 2";
@@ -23,7 +12,7 @@ export class TeezeeCalculation extends LitElement {
             transition: all 0.3s ease;
         }
 
-        .header:hover {
+        .game-over:hover {
             animation: fireworks 1s ease-in-out;
         }
 
@@ -41,15 +30,57 @@ export class TeezeeCalculation extends LitElement {
                 0 0 80px violet;
             }
         }
+        
+        .calculation-game {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            width: 100vw;
+            height: calc(100vh - 200px);
+            background-color: darkmagenta;
+            box-sizing: border-box;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+            }
+        }
+
+        #timer {
+            position: fixed;
+            top: 15%;
+            transform: translate(-50%, -50%); 
+            font-size: 64px;
+            font-family: 'Baloo Tamma 2', cursive;
+            color: white;
+            background: linear-gradient(135deg, #8e2de2, #ff6ec4); 
+            margin: 16px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
+            animation: pulse 2s infinite;
+        }
+
 
 
         .calculation-container {
-            font-family: "Baloo Tamma 2";
-            font-size: 100px;
+            font-family: "Baloo Tamma 2", cursive;
+            font-size: 200px;
             color: fuchsia;
-            height: 150px;
             animation: flyIn 1s ease-out;
         }
+
 
         @keyframes flyIn {
             0% {
@@ -79,8 +110,7 @@ export class TeezeeCalculation extends LitElement {
             color: whitesmoke;
             animation: bounce 1s ease infinite;
         }
-
-
+        
         .notification.error {
             background-color: red;
             border-radius: 3px;
@@ -151,15 +181,16 @@ export class TeezeeCalculation extends LitElement {
         }
 
         .calculation-input {
-            height: 80%;
+            height: 200px;
             background-color: fuchsia;
             color: lightpink;
             font-family: "Baloo Tamma 2";
-            font-size: 100px;
-            width: 150px;
+            font-size: 200px;
+            width: 235px;
             border: 2px solid lightpink;
             border-radius: 8px;
             transition: all 0.3s ease;
+
         }
 
         .calculation-input:hover {
@@ -208,7 +239,7 @@ export class TeezeeCalculation extends LitElement {
             border-color: white;
             box-shadow: 0 0 10px lightpink;
         }
-        
+
         .score {
             background-color: deeppink;
             border-color: white;
@@ -218,7 +249,7 @@ export class TeezeeCalculation extends LitElement {
             display: flex;
             justify-content: flex-end;
         }
-        
+
         .img {
             position: absolute;
             top: 100px;
@@ -238,16 +269,16 @@ export class TeezeeCalculation extends LitElement {
                 transform: translateX(0) rotate(0deg);
             }
             25% {
-                transform: translateX(600px) translateY(-25px) rotate(45deg);
+                transform: translateX(300px) translateY(-25px) rotate(45deg);
             }
             50% {
-                transform: translateX(300px) translateY(0px) rotate(90deg);
+                transform: translateX(600px) translateY(0px) rotate(90deg);
             }
             75% {
-                transform: translateX(1300px) translateY(-50px) rotate(135deg);
+                transform: translateX(900px) translateY(-50px) rotate(45deg);
             }
             100% {
-                transform: translateX(1100px) translateY(0px) rotate(180deg);
+                transform: translateX(1100px) translateY(0px) rotate(0deg);
             }
         }
 
@@ -275,16 +306,25 @@ export class TeezeeCalculation extends LitElement {
         },
         _score: {
             type: Number,
+        },
+        _gameStarted: {
+            type: Boolean,
+        },
+        _gameOver: {
+            type: Boolean,
         }
+
     }
 
     constructor() {
         super();
         this._displayCalculation = true;
         this._succes = false;
-        this._tableChoice = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10,34];
+        this._tableChoice = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 34];
         this._tableChoiceSelected = [];
         this._score = 0;
+        this._gameStarted = false;
+        this._gameOver = false;
     }
 
     updated() {
@@ -333,38 +373,79 @@ export class TeezeeCalculation extends LitElement {
 
     _renderCalculation() {
 
-        if (!this._displayCalculation) {
-            return this._succes ? this._renderSucces() : this._renderError();
-        }
+        if(!this._gameOver) {
 
-        return html`
-            <div class="calculation-container">
-                <span class="number">${this.randomNumberLeft}</span>
-                <span> x </span>
-                <span class="number">${this.randomNumberRight}</span>
-                <span> = </span>
-                <input @keydown="${(e) => this.calculate(e)}" class="noscroll calculation-input" type="number">
-                <div class="score">PUNTEN  ${this._score}</div>
-            </div>
-        `
+            if (!this._displayCalculation) {
+                return this._succes ? this._renderSucces() : this._renderError();
+            }
+
+            return html`
+                <div class="calculation-container">
+                    <span class="number">${this.randomNumberLeft}</span>
+                    <span> x </span>
+                    <span class="number">${this.randomNumberRight}</span>
+                    <span> = </span>
+                    <input @keydown="${(e) => this.calculate(e)}" class="calculation-input" type="text"
+                           inputmode="numeric"
+                           pattern="[0-9]*">
+                    <div class="score">PUNTEN ${this._score}</div>
+                </div>
+            `
+        } else {
+            return html`
+            <div class="game-over">GameOver</div>
+            `
+        }
+    }
+
+    _timer() {
+        let totalSeconds = 2 * 60;
+
+        const timerElement = document.querySelector('teezee-calculation').shadowRoot.getElementById("timer");
+
+        const countdown = setInterval(() => {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+
+            timerElement.textContent =
+                `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+            if (totalSeconds <= 0) {
+                clearInterval(countdown);
+                this._gameOver = true;
+            }
+
+            totalSeconds--;
+        }, 1000);
+
     }
 
     calculate(event) {
+
         if (event.key !== 'Enter') return;
 
-        this._correctAnswer = parseInt(this.randomNumberLeft * this.randomNumberRight);
-        const userInput = parseInt(document.querySelector('teezee-calculation').shadowRoot.querySelector('.calculation-input').value);
-
-        if (userInput) {
-            this._succes = this._correctAnswer === userInput;
-            this._displayCalculation = false;
+        if(!this._gameOver && !this._gameStarted) {
+            this._timer();
+            this._gameStarted = true;
         }
 
-        setTimeout(() => {
-            this._displayCalculation = true;
+        if(!this._gameOver) {
 
 
-        }, 1000)
+            this._correctAnswer = parseInt(this.randomNumberLeft * this.randomNumberRight);
+            const userInput = parseInt(document.querySelector('teezee-calculation').shadowRoot.querySelector('.calculation-input').value);
+
+            if (userInput) {
+                this._succes = this._correctAnswer === userInput;
+                this._displayCalculation = false;
+            }
+
+            setTimeout(() => {
+                this._displayCalculation = true;
+
+
+            }, 1000)
+        }
     }
 
     _setTableChoice(event, tableChoice) {
@@ -404,15 +485,10 @@ export class TeezeeCalculation extends LitElement {
         return html`
             ${this._selectTables()}
             <div class="calculation-game">
-                <div class="header">Tafeldiploma Kiki</div>
+                <div id="timer"></div>
                 ${this._renderCalculation()}
             </div>
 
         `
     }
 }
-
-
-
-
-
