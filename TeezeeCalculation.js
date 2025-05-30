@@ -313,10 +313,79 @@ export class TeezeeCalculation extends LitElement {
         }
 
 
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-family: "Baloo Tamma 2", cursive;
+            border: 1px solid lightpink;
+            font-size: 24px;
+            list-style-type: none;
+        }
+
+        th {
+            background-color: #800080; /* Paars */
+            color: white;
+            padding: 24px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+
+        tr:nth-child(even) {
+            background-color: #ffc0cb; /* Roze */
+        }
+
+        tr:nth-child(odd) {
+            background-color: #ffffff; /* Wit */
+        }
+
+        .set-name-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; /* Volledige hoogte van het scherm */
+        }
+
+        .name-header {
+            font-size: 2em;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .name-input {
+            width: 20%;
+            padding: 10px 15px;
+            font-size: 3em;
+            border: 2px solid #800080;
+            border-radius: 6px;
+            background-color: #fff;
+            color: #4b004b;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .name-input:focus {
+            border-color: #ff69b4; /* Roze */
+            box-shadow: 0 0 8px #ffb6c1;
+        }
+
+
 
     `;
 
     static properties = {
+        _nameSet: {
+            type: String,
+        },
+        _gameName: {
+            type:String,
+        },
         randomNumberLeft: {
             type: Number,
         },
@@ -354,12 +423,16 @@ export class TeezeeCalculation extends LitElement {
         super();
         this._displayCalculation = true;
         this._succes = false;
-        this._tableChoice = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 34];
+        this._tableChoice = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
         this._tableChoiceSelected = [];
         this._score = 0;
         this._gameStarted = false;
         this._gameOver = false;
         this._wrongAnswer = 0;
+    }
+
+    firstUpdated() {
+
     }
 
     updated() {
@@ -406,6 +479,41 @@ export class TeezeeCalculation extends LitElement {
         `
     }
 
+    _renderScoreBoard() {
+
+        const savedGames = JSON.parse(localStorage.getItem('calculationGame'));
+        if(!savedGames) return;
+
+        const sortedSavedGames = savedGames.sort((a, b) => b.score - a.score);
+
+        return html`
+            <table>
+                <thead>
+                <tr>
+                    <th>Naam</th>
+                    <th>Tafels</th>
+                    <th>Score</th>
+                    <th>Foutjes</th>
+                    <th>Diploma</th>
+                </tr>
+                </thead>
+                <tbody>
+                ${sortedSavedGames.map((game) => {
+                    return html`
+                        <tr>
+                            <td>${game.name}</td>
+                            <td>${game.tables.length < 1 ? 'alle' : game.tables}</td>
+                            <td>${game.score}</td>
+                            <td>${game.errors}</td>
+                            <td>${game.graduate ? 'Ja' : 'Nee'}</td>
+                        </tr>
+                    `
+                })}
+                </tbody>
+            </table>
+        `
+    }
+
     _renderCalculation() {
 
         if (!this._gameOver) {
@@ -445,18 +553,18 @@ export class TeezeeCalculation extends LitElement {
         }
     }
 
-    _startGame(){
+    _startGame() {
         window.location.reload();
     }
 
     _renderDiploma() {
-        this._wrongAnswer === 0 && this._succes > 19 ? html`
+        return this._wrongAnswer === 0 && this._succes > 19 ? html`
             <div>Je hebt je diploma gehaald!</div>` : html`
             <div>Je hebt helaas geen diploma :(</div>`
     }
 
     _timer() {
-        let totalSeconds = 2 * 60;
+        let totalSeconds = 2;
 
         const timerElement = document.querySelector('teezee-calculation').shadowRoot.getElementById("timer");
 
@@ -469,7 +577,33 @@ export class TeezeeCalculation extends LitElement {
 
             if (totalSeconds <= 0) {
                 clearInterval(countdown);
+
                 this._gameOver = true;
+
+
+                let mergedGames = [];
+
+                const graduate = this._wrongAnswer === 0 && this._succes > 19;
+                const calculationGame = [{
+                    name: this._gameName,
+                    tables: this._tableChoiceSelected,
+                    score: this._score,
+                    errors: this._wrongAnswer,
+                    graduate: graduate
+                }];
+
+                const savedGames = JSON.parse(localStorage.getItem('calculationGame'));
+
+                if (savedGames && savedGames.length > 0) {
+                    mergedGames = [...calculationGame, ...savedGames];
+                } else {
+                    mergedGames = calculationGame;
+                }
+
+
+                localStorage.setItem('calculationGame', JSON.stringify(mergedGames));
+
+                //remove timer
                 const timer = document.querySelector('teezee-calculation').shadowRoot.querySelector('#timer');
                 document.querySelector('teezee-calculation').shadowRoot.querySelector('.calculation-game').removeChild(timer);
             }
@@ -538,7 +672,21 @@ export class TeezeeCalculation extends LitElement {
 
     }
 
+    _setName(event) {
+        if (event.key !== 'Enter') return;
+        this._gameName = document.querySelector('teezee-calculation').shadowRoot.querySelector(".name-input").value;
+    }
+
     render() {
+        if(!this._gameStarted && !this._nameSet) {
+            this._nameSet = true;
+            return html`
+                <div class="set-name-container">
+                    <div class="name-header">Voer je naam in</div>
+                    <input @keydown="${(e) => this._setName(e)}" type="text" class="name-input">
+                </div>
+            `
+        }
         this.createMath();
         return html`
             ${this._selectTables()}
@@ -546,7 +694,7 @@ export class TeezeeCalculation extends LitElement {
                 <div id="timer"></div>
                 ${this._renderCalculation()}
             </div>
-
+            ${this._renderScoreBoard()}
         `
     }
 }
