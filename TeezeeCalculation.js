@@ -564,7 +564,7 @@ export class TeezeeCalculation extends LitElement {
     }
 
     _timer() {
-        let totalSeconds = 2;
+        let totalSeconds = 2 * 60;
 
         const timerElement = document.querySelector('teezee-calculation').shadowRoot.getElementById("timer");
 
