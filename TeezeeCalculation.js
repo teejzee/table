@@ -268,18 +268,19 @@ export class TeezeeCalculation extends LitElement {
                 transform: translateX(0) rotate(0deg);
             }
             25% {
-                transform: translateX(300px) translateY(-25px) rotate(45deg);
+                transform: translateX(25vw) translateY(-2vh) rotate(45deg);
             }
             50% {
-                transform: translateX(600px) translateY(0px) rotate(90deg);
+                transform: translateX(50vw) translateY(0vh) rotate(90deg);
             }
             75% {
-                transform: translateX(900px) translateY(-50px) rotate(45deg);
+                transform: translateX(75vw) translateY(-4vh) rotate(45deg);
             }
             100% {
-                transform: translateX(1100px) translateY(0px) rotate(0deg);
+                transform: translateX(90vw) translateY(0vh) rotate(0deg);
             }
         }
+
 
         .calculation-button {
             font-family: 'Baloo Tamma 2', cursive;
