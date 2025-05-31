@@ -228,9 +228,8 @@ export class TeezeeCalculation extends LitElement {
         }
 
         .table-number:hover {
-            background-color: deeppink;
-            border-color: white;
-            box-shadow: 0 0 10px lightpink;
+            border-color: deeppink;
+            box-shadow: 0 0 10px deeppink;
         }
 
         .table-number:selected {
@@ -441,7 +440,7 @@ export class TeezeeCalculation extends LitElement {
     }
 
     createRandomNumber() {
-        return Math.floor(Math.random() * (9) + 1);
+        return Math.floor(Math.random() * (10) + 1);
     }
 
     createMath() {
