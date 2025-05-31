@@ -683,6 +683,7 @@ export class TeezeeCalculation extends LitElement {
                     <div class="name-header">Voer je naam in</div>
                     <input @keydown="${(e) => this._setName(e)}" type="text" class="name-input">
                 </div>
+                ${this._renderScoreBoard()}
             `
         }
         this.createMath();
